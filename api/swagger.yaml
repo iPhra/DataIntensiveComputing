@@ -1,0 +1,46 @@
+---
+swagger: "2.0"
+info:
+  description: "OpenAPI specification for the RESTful API of the backend of the Hypermedia\
+    \ application course project a.y. 2018/2019.\n"
+  version: "3.0.0"
+  title: "Hypermedia course API"
+host: "polimi-hyp-2019-team-10489796.herokuapp.com"
+basePath: "/apis"
+tags:
+- name: "Words"
+schemes:
+- "https"
+paths:
+  /words:
+    get:
+      tags:
+      - "Books"
+      summary: "Returns a preview of all the books filtered by keyword."
+      operationId: "wordsGET"
+      produces:
+      - "application/json"
+      parameters:
+      responses:
+        200:
+          description: "The list of all words for each hashtag, together with the count"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                hashtag:
+                  type: "integer"
+                  format: "int64"
+                word:
+                  type: "string"
+                date:
+                  type: "date"
+                count:
+                  type: "integer"
+                  format: "int64"
+        400:
+          description: "Bad request."
+      x-swagger-router-controller: "Words"
+
+definitions:
