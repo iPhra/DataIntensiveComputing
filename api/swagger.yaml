@@ -20,7 +20,6 @@ paths:
       operationId: "wordsGET"
       produces:
       - "application/json"
-      parameters:
       responses:
         200:
           description: "The list of all words for each hashtag, together with the count"
@@ -35,12 +34,11 @@ paths:
                 word:
                   type: "string"
                 date:
-                  type: "date"
+                  type: "string"
+                  format: "date"
                 count:
                   type: "integer"
                   format: "int64"
         400:
           description: "Bad request."
       x-swagger-router-controller: "Words"
-
-definitions:
