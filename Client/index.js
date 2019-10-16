@@ -9,7 +9,6 @@ const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 let serveStatic = require("serve-static");
-let { setupDatabase } = require("./service/Database");
 
 // swaggerRouter configuration
 const options = {
@@ -45,12 +44,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   app.use(serveStatic(path.join(__dirname, 'public')));
 
-  setupDatabase();
-
   // Start the server
   http.createServer(app).listen(serverPort, function () {
     console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
   });
 
 });

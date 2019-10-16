@@ -3,6 +3,7 @@
 const utils = require('../utils/writer.js');
 const Words = require('../service/WordsService');
 
+
 module.exports.wordsGET = function wordsGET (req, res, next) {
   Words.wordsGET()
       .then(function (response) {
