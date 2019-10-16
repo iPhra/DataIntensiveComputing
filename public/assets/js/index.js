@@ -1,27 +1,20 @@
-anychart.onDocumentReady(function() {
-  var data = [
-    {"x": "Mandarin chinese", "value": 1090000000, category: "Sino-Tibetan"},
-    {"x": "English", "value": 983000000, category: "Indo-European"},
-    {"x": "Hindustani", "value": 544000000, category: "Indo-European"},
-    {"x": "Spanish", "value": 527000000, category: "Indo-European"},
-    {"x": "Arabic", "value": 422000000, category: "Afro-Asiatic"},
-    {"x": "Malay", "value": 281000000, category: "Austronesian"},
-    {"x": "Russian", "value": 267000000, category: "Indo-European"},
-    {"x": "Bengali", "value": 261000000, category: "Indo-European"},
-    {"x": "Portuguese", "value": 229000000, category: "Indo-European"},
-    {"x": "French", "value": 229000000, category: "Indo-European"},
-    {"x": "Hausa", "value": 150000000, category: "Afro-Asiatic"},
-    {"x": "Punjabi", "value": 148000000, category: "Indo-European"},
-    {"x": "Japanese", "value": 129000000, category: "Japonic"},
-    {"x": "German", "value": 129000000, category: "Indo-European"},
-    {"x": "Persian", "value": 121000000, category: "Indo-European"}
-  ];
+let active;
+
+/*anychart.onDocumentReady(async function() {
+  const books = await (await fetch("/apis/words")).json();
+    
+  let data = [];
+  let obj;
+  for(let i=0; i<books.length; i++) {
+      obj = {"x":books[i].word, "value":books[i].frequency, "category":books[i].tag}
+      data.push(obj)
+  }
 
  // create a tag (word) cloud chart
   var chart = anychart.tagCloud(data);
 
    // set a chart title
-  chart.title('15 most spoken languages')
+  chart.title('Most frequent words per hashtag')
   // set an array of angles at which the words will be laid out
   chart.angles([0])
   // enable a color range
@@ -32,4 +25,58 @@ anychart.onDocumentReady(function() {
   // display the word cloud chart
   chart.container("container");
   chart.draw();
+});*/
+
+async function drawChart(tag) {
+    if(tag[0]==="#") {
+        tag = "%23"+tag.substring(1);
+    }
+    const words = await (await fetch("/apis/words?tag="+tag)).json();
+
+    let data = [];
+    let obj;
+    for(let i=0; i<words.length; i++) {
+      obj = {"x":words[i].word, "value":words[i].frequency, "category":words[i].date}
+      data.push(obj)
+    }
+
+    // create a tag (word) cloud chart
+    var chart = anychart.tagCloud(data);
+
+    // set a chart title
+    chart.title('Most frequent words for hashtag '+active)
+    // set an array of angles at which the words will be laid out
+    chart.angles([0])
+    // enable a color range
+    chart.colorRange(true);
+    // set the color range length
+    chart.colorRange().length('80%');
+
+    // display the word cloud chart
+    chart.container("container");
+    chart.draw();
+}
+
+async function appendTags() {
+    const tags = await (await fetch("/apis/tags")).json();
+    
+    for(let i=0; i<tags.length; i++) {
+        $('.list-group').append('<a href="#" id="'+tags[i].tag+'" class="list-group-item list-group-item-action">'+tags[i].tag+'</a>');
+    }
+
+    active = tags[0].tag
+    await drawChart(active)
+}
+
+$(function() {
+    $(document).on("click", ".list-group-item", async function() {
+        active = this.id;
+        $('#container').empty();
+        await drawChart(this.id);
+    });
+});
+
+
+$(async function() {
+    await appendTags();
 });

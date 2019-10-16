@@ -20,6 +20,12 @@ paths:
       operationId: "wordsGET"
       produces:
       - "application/json"
+      parameters:
+        - name: "tag"
+          in: "query"
+          description: "A tag"
+          required: false
+          type: "string"
       responses:
         200:
           description: "The list of all words for each hashtag, together with the count"
@@ -39,6 +45,27 @@ paths:
                 count:
                   type: "integer"
                   format: "int64"
+        400:
+          description: "Bad request."
+      x-swagger-router-controller: "Words"
+  /tags:
+    get:
+      tags:
+        - "Books"
+      summary: "Returns a preview of all the books filtered by keyword."
+      operationId: "tagsGET"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "The list of all words for each hashtag, together with the count"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                tag:
+                  type: "string"
         400:
           description: "Bad request."
       x-swagger-router-controller: "Words"
