@@ -3,18 +3,21 @@
 const {database} = require("./Database");
 
 
-exports.wordsGET = async (tag) => {
-  const words = await database("word")
-      .select("*").where("tag","=",tag);
-
-  for(let i=0; i<words.length; i++) {
-    words[i].date = words[i].date.toISOString().slice(0,10)
-  }
-
-  return words;
+exports.wordsGET = async (tag, date) => {
+  return (await database("word")
+      .select("*").whereRaw("tag = ? and date = ?",[tag,new Date(date)]));
 };
 
 exports.tagsGET = async () => {
   return (await database("word").select("tag").distinct());
 };
 
+exports.datesGET = async (tag) => {
+  const dates =  await database("word").select("date").where("tag","=",tag).distinct();
+
+  for(let i=0; i<dates.length; i++) {
+    dates[i].date = dates[i].date.toDateString();
+  }
+
+  return dates;
+};

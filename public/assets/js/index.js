@@ -1,56 +1,20 @@
-let active;
-
-/*anychart.onDocumentReady(async function() {
-  const books = await (await fetch("/apis/words")).json();
-    
-  let data = [];
-  let obj;
-  for(let i=0; i<books.length; i++) {
-      obj = {"x":books[i].word, "value":books[i].frequency, "category":books[i].tag}
-      data.push(obj)
-  }
-
- // create a tag (word) cloud chart
-  var chart = anychart.tagCloud(data);
-
-   // set a chart title
-  chart.title('Most frequent words per hashtag')
-  // set an array of angles at which the words will be laid out
-  chart.angles([0])
-  // enable a color range
-  chart.colorRange(true);
-  // set the color range length
-  chart.colorRange().length('80%');
-
-  // display the word cloud chart
-  chart.container("container");
-  chart.draw();
-});*/
-
-async function drawChart(tag) {
-    if(tag[0]==="#") {
-        tag = "%23"+tag.substring(1);
-    }
-    const words = await (await fetch("/apis/words?tag="+tag)).json();
+async function drawChart(tag,date) {
+    const words = await (await fetch("/apis/words?tag="+tag+"&date="+date)).json();
 
     let data = [];
     let obj;
     for(let i=0; i<words.length; i++) {
-      obj = {"x":words[i].word, "value":words[i].frequency, "category":words[i].date}
+      obj = {"x":words[i].word, "value":words[i].frequency};
       data.push(obj)
     }
 
     // create a tag (word) cloud chart
-    var chart = anychart.tagCloud(data);
+    const chart = anychart.tagCloud(data);
 
     // set a chart title
-    chart.title('Most frequent words for hashtag '+active)
+    chart.title('Most frequent words for trend "'+tag+'" on '+date);
     // set an array of angles at which the words will be laid out
-    chart.angles([0])
-    // enable a color range
-    chart.colorRange(true);
-    // set the color range length
-    chart.colorRange().length('80%');
+    chart.angles([0]);
 
     // display the word cloud chart
     chart.container("container");
@@ -59,20 +23,46 @@ async function drawChart(tag) {
 
 async function appendTags() {
     const tags = await (await fetch("/apis/tags")).json();
-    
+
+    let heading;
+    let collapse;
     for(let i=0; i<tags.length; i++) {
-        $('.list-group').append('<a href="#" id="'+tags[i].tag+'" class="list-group-item list-group-item-action">'+tags[i].tag+'</a>');
+        heading = "heading"+tags[i].tag;
+        collapse = "collapse"+tags[i].tag;
+        $('#accordion').append('<div class="card">' +
+            '        <div class="card-header" id="'+heading+'">' +
+            '            <h5 class="mb-0">' +
+            '                <button class="btn btn-link" data-toggle="collapse" data-target="#'+collapse+'" aria-expanded="false" aria-controls="'+collapse+'">' +
+            ''+tags[i].tag+''+
+            '                </button>' +
+            '            </h5>' +
+            '        </div>' +
+            '        <div id="'+collapse+'" class="collapse show" aria-labelledby="'+heading+'" data-parent="#accordion">' +
+            '            <div class="card-body">' +
+            ''+await appendDates(tags[i].tag)+'' +
+            '            </div>' +
+            '        </div>' +
+            '    </div>');
     }
 
-    active = tags[0].tag
-    await drawChart(active)
+}
+
+async function appendDates(tag) {
+    const dates = await (await fetch("/apis/dates?tag="+tag)).json();
+
+    let html = "";
+    for(let i=0; i<dates.length; i++) {
+        html = html + '<a href="#" id="'+dates[i].date+'" class="list-group-item list-group-item-action">'+dates[i].date+'</a>';
+    }
+
+    return html;
+
 }
 
 $(function() {
     $(document).on("click", ".list-group-item", async function() {
-        active = this.id;
         $('#container').empty();
-        await drawChart(this.id);
+        await drawChart($(this).parent().parent().attr('id').substring(8),this.id);
     });
 });
 
