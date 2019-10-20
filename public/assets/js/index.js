@@ -1,4 +1,7 @@
 async function drawChart(tag,date) {
+    if (tag[0]==="#") {
+        tag = "%23" + tag.substring(1);
+    }
     const words = await (await fetch("/apis/words?tag="+tag+"&date="+date)).json();
 
     let data = [];
@@ -27,9 +30,6 @@ async function appendTags() {
     let heading;
     let collapse;
     for(let i=0; i<tags.length; i++) {
-        if (tags[i].tag[0]==="#") {
-            tags[i].tag = tags[i].tag.substring(1);
-        }
         heading = "heading"+tags[i].tag;
         collapse = "collapse"+tags[i].tag;
         $('#accordion').append('<div class="card">' +
@@ -51,6 +51,9 @@ async function appendTags() {
 }
 
 async function appendDates(tag) {
+    if (tag[0]==="#") {
+        tag = "%23" + tag.substring(1);
+    }
     const dates = await (await fetch("/apis/dates?tag="+tag)).json();
 
     let html = "";
