@@ -5,7 +5,10 @@ const {database} = require("./Database");
 
 exports.wordsGET = async (tag, date) => {
   return (await database("word")
-      .select("*").whereRaw("tag = ? and date = ?",[tag,new Date(date)]));
+      .select("*")
+      .whereRaw("tag = ? and date = ?",[tag,new Date(date)])
+      .orderBy("frequency","desc")
+      .limit(50));
 };
 
 exports.tagsGET = async () => {
