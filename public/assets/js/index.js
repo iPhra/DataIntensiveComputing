@@ -28,7 +28,7 @@ async function appendTags() {
     let collapse;
     for(let i=0; i<tags.length; i++) {
         if (tags[i].tag[0]==="#") {
-            tags[i] = tags[i].substring(1);
+            tags[i].tag = tags[i].tag.substring(1);
         }
         heading = "heading"+tags[i].tag;
         collapse = "collapse"+tags[i].tag;
