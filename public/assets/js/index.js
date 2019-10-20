@@ -27,6 +27,9 @@ async function appendTags() {
     let heading;
     let collapse;
     for(let i=0; i<tags.length; i++) {
+        if (tags[i][0]==="#") {
+            tags[i] = tags[i].substring(1);
+        }
         heading = "heading"+tags[i].tag;
         collapse = "collapse"+tags[i].tag;
         $('#accordion').append('<div class="card">' +
