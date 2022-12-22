@@ -17,7 +17,7 @@
     "config": "^3.0.1",
     "connect": "^3.2.0",
     "js-yaml": "^3.13.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "knex": "latest",
     "pg": "^7.9.0",
     "serve-static": "latest",
