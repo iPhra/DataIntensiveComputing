@@ -14,7 +14,7 @@
   "private": true,
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "config": "^3.0.1",
+    "config": "^3.3.8",
     "connect": "^3.2.0",
     "js-yaml": "^3.13.0",
     "jsonwebtoken": "^8.5.1",
